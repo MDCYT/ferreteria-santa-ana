@@ -20,6 +20,12 @@ type HeaderProps = {
 export default function Header({ primaryColor, secondaryColor, onPrimaryColorChange, onSecondaryColorChange, onNavigate }: HeaderProps) {
   const { theme, setTheme } = useTheme()
 
+  const navigate = (page: string) => {
+    onNavigate(page)
+  }
+
+  navigate('home')
+
   return (
     <header className="bg-primary text-primary-foreground shadow-md">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
