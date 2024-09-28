@@ -1,5 +1,6 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import Image from 'next/image'
 
 const products = [
   { id: 1, name: 'Martillo', price: 25.99, image: 'https://picsum.photos/600/400' },
@@ -21,7 +22,7 @@ export default function ProductGrid() {
             <CardTitle>{product.name}</CardTitle>
           </CardHeader>
           <CardContent>
-            <img src={product.image} alt={product.name} className="w-full h-48 object-cover mb-4" />
+            <Image src={product.image} alt={product.name} className="w-full h-48 object-cover mb-4" width={600} height={400} />
             <p className="text-2xl font-bold">S/ {product.price.toFixed(2)}</p>
           </CardContent>
           <CardFooter>
