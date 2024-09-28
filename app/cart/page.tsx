@@ -21,8 +21,15 @@ export default function ShoppingCart() {
   };
 
   const totalPrice = products.reduce(
-    (acc, product) => acc + product.product.price * product.quantity,
+    // (acc, product) => acc + product.product.price * product.quantity,
+    // 0
+    // Use discounted_price if available
+    (acc, product) =>
+      acc +
+      (product.product.discounted_price || product.product.price) *
+        product.quantity, // Use discounted_price if available
     0
+    
   );
 
   const GenLinkWhatsapp = () => {

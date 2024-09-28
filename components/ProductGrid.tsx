@@ -2,18 +2,31 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 
-const products = [
-  { id: 1, name: 'Martillo', price: 25.99, image: 'https://picsum.photos/600/400' },
-  { id: 2, name: 'Destornillador', price: 15.50, image: 'https://picsum.photos/600/400' },
-  { id: 3, name: 'Sierra', price: 45.00, image: 'https://picsum.photos/600/400' },
-  { id: 4, name: 'Taladro', price: 89.99, image: 'https://picsum.photos/600/400' },
-  { id: 5, name: 'Llave inglesa', price: 18.75, image: 'https://picsum.photos/600/400' },
-  { id: 6, name: 'Cinta métrica', price: 9.99, image: 'https://picsum.photos/600/400' },
-  { id: 7, name: 'Nivel', price: 22.50, image: 'https://picsum.photos/600/400' },
-  { id: 8, name: 'Alicates', price: 14.25, image: 'https://picsum.photos/600/400' },
-]
+import { Product } from '@/interfaces/Products'
+import { useState, useEffect } from 'react'
+import { useCartStore } from '@/providers/CartStoreProvider'
 
 export default function ProductGrid() {
+  const [products, setProducts] = useState<Product[]>([])
+
+  const { hasProduct, addProduct, addProductQuantity } = useCartStore(state => state)
+
+  useEffect(() => {
+    fetch("/api/products").then(
+      (res) => res.json()
+    ).then((data: Product[]) => {
+      setProducts(data)
+    })
+  }, [])
+
+  const addProductToCart = (product: Product) => {	
+    if (!hasProduct(product.id)) {
+      addProduct({ product, quantity: 1 })
+    } else {
+      addProductQuantity(product.id, 1)
+    }
+  }
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {products.map((product) => (
@@ -23,10 +36,15 @@ export default function ProductGrid() {
           </CardHeader>
           <CardContent>
             <Image src={product.image} alt={product.name} className="w-full h-48 object-cover mb-4" width={600} height={400} />
-            <p className="text-2xl font-bold">S/ {product.price.toFixed(2)}</p>
+            <p className="text-2xl font-bold">{product.discounted_price ?
+              <>
+                <span className="line-through text-gray-500">${product.price}</span>
+                ${product.discounted_price}
+              </> : `$${product.price}`}
+            </p>
           </CardContent>
           <CardFooter>
-            <Button className="w-full">Agregar al carrito</Button>
+            <Button className="w-full" onClick={() => addProductToCart(product)}>Agregar al carrito</Button>
           </CardFooter>
         </Card>
       ))}

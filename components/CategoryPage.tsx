@@ -52,7 +52,9 @@ export default function ProductPage({
       const [brandsData, categoriesData, productsData] = await Promise.all([
         fetch("/api/brands").then((res) => res.json()),
         fetch("/api/categories").then((res) => res.json()),
-        fetch("/api/products").then((res) => res.json()),
+        fetch(`/api/products/category/${selectedCategory}`).then((res) =>
+          res.json()
+        ).then((data) => data.products),
       ]);
       setBrands(brandsData);
       setCategories(categoriesData);
@@ -148,7 +150,16 @@ export default function ProductPage({
                   className="w-full h-48 object-cover mb-4"
                 />
                 <p className="text-2xl font-bold">
-                  S/ {product.price.toFixed(2)}
+                  { product.discounted_price ? (
+                    <>
+                      <span className="line-through text-gray-400">
+                        S/ {product.price.toFixed(2)}
+                      </span>{" "}
+                      S/ {product.discounted_price.toFixed(2)}
+                    </>
+                  ) : (
+                    `S/ ${product.price.toFixed(2)}`
+                  )}
                 </p>
               </CardContent>
               <CardFooter className="flex justify-between">
@@ -180,7 +191,16 @@ export default function ProductPage({
                   height={300}
                 />
                 <p className="text-2xl font-bold mb-2">
-                  S/ {selectedProduct.price.toFixed(2)}
+                  { selectedProduct.discounted_price ? (
+                    <>
+                      <span className="line-through text-gray-400">
+                        S/ {selectedProduct.price.toFixed(2)}
+                      </span>{" "}
+                      S/ {selectedProduct.discounted_price.toFixed(2)}
+                    </>
+                  ) : (
+                    `S/ ${selectedProduct.price.toFixed(2)}`
+                  )}
                 </p>
                 <p>Categoría: {getCategoryName(selectedProduct.category)}</p>
                 <p>Marca: {getBrandName(selectedProduct.brand)}</p>

@@ -82,7 +82,11 @@ export default function HomePage() {
               <CardContent>
                 <Image src={product.image} alt={product.name} className="w-full h-48 object-cover mb-4" width={200} height={300} />
                 <p className="text-2xl font-bold">
-                  S/ {product.price.toFixed(2)}
+                  { product.discounted_price ? 
+                    <span className="line-through text-gray-500">${product.price}</span> : 
+                    <span>${product.price}</span>
+                  }
+                  { product.discounted_price && <span className="ml-2">${product.discounted_price}</span> }
                 </p>
               </CardContent>
               <CardFooter>
