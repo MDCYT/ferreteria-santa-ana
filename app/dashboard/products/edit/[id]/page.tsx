@@ -33,16 +33,18 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 import { useEffect, useState } from "react";
 
-import { Brand, Category } from "@/interfaces/Products";
+import { Brand, Category, Product } from "@/interfaces/Products";
 
 import { useRouter } from "next/navigation";
 
-import Aside from "../../components/Aside";
-import Header from "../../components/Header";
+import Aside from "@/app/dashboard/components/Aside";
+import Header from "@/app/dashboard/components/Header";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+
+import { useParams } from "next/navigation";
 
 import { createClient } from "@/utils/supabase/client";
 
@@ -62,9 +64,14 @@ const formSchema = z.object({
 export default function Dashboard() {
   const [brands, setBrands] = useState<Brand[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [product, setProduct] = useState<Product | null>(null);
 
   const [selectedBrand, setselectedBrand] = useState<number | null>(null);
   const [selectedCategory, setselectedCategory] = useState<number | null>(null);
+
+  // Get param id
+  const id = Number(useParams().id);
+    
 
   const router = useRouter();
 

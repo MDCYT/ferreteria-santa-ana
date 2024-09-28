@@ -64,8 +64,8 @@ import { createClient } from "@/utils/supabase/client";
 
 import { useRouter } from "next/navigation";
 
-import Aside from "../components/Aside";
-import Header from "../components/Header";
+import Aside from "@/app/dashboard/components/Aside";
+import Header from "@/app/dashboard/components/Header";
 import Link from "next/link";
 
 export default function Dashboard() {
