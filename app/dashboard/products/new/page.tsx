@@ -37,8 +37,8 @@ import { Brand, Category } from "@/interfaces/Products";
 
 import { useRouter } from "next/navigation";
 
-import Aside from "../../components/Aside";
-import Header from "../../components/Header";
+import Aside from "@/app/dashboard/components/Aside";
+import Header from "@/app/dashboard/components/Header";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";

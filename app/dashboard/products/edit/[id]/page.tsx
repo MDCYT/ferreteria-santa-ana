@@ -64,7 +64,6 @@ const formSchema = z.object({
 export default function Dashboard() {
   const [brands, setBrands] = useState<Brand[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [product, setProduct] = useState<Product | null>(null);
 
   const [selectedBrand, setselectedBrand] = useState<number | null>(null);
   const [selectedCategory, setselectedCategory] = useState<number | null>(null);
@@ -95,8 +94,8 @@ export default function Dashboard() {
     values.brand_id = selectedBrand || 0;
     values.category_id = selectedCategory || 0;
     // 3. Send the data to the server
-    fetch("/api/products", {
-      method: "POST",
+    fetch(`/api/products/${id}`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
@@ -137,7 +136,28 @@ export default function Dashboard() {
         );
         setCategories(filteredCategories);
       });
-  }, []);
+
+      fetch (`/api/products/${id}`)
+      .then((res) => res.json())
+      .then(({ product }: { product: Product }) => {
+        // Update default values
+        form.setValue("name", product.name);
+        form.setValue("description", product.description);
+        form.setValue("price", String(product.price));
+        form.setValue("stock", String(product.stock));
+        form.setValue("brand_id", product.brand);
+        form.setValue("category_id", product.category);
+        form.setValue("image", product.image);
+        form.setValue("featured", product.featured);
+        form.setValue("status", product.status);
+        form.setValue("discounted_price", String(product.discounted_price))
+        
+        setselectedBrand(product.brand);
+        setselectedCategory(product.category);
+
+      }
+    );
+  }, [form, id]);
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-[#09090b]/90">

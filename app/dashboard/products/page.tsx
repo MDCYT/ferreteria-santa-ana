@@ -140,7 +140,7 @@ export default function Dashboard() {
     } else {
       setFilteredProducts(products);
     }
-  }, [selectedBrand, products]);
+  }, [selectedBrand, products, selectedCategory]);
 
   const handleDeleteProduct = (id: number) => {
     fetch(`/api/products/delete/${id}`, {
@@ -380,7 +380,11 @@ export default function Dashboard() {
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                                <DropdownMenuItem>Editar</DropdownMenuItem>
+                                <DropdownMenuItem>
+                                  <Link href={`/dashboard/products/edit/${product.id}`}>
+                                    Editar
+                                  </Link>
+                                </DropdownMenuItem>
                                   <AlertDialog>
                                     <AlertDialogTrigger asChild>
                                       <Button variant="destructive">

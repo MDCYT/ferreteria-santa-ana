@@ -42,7 +42,6 @@ export async function POST(
   const client = createClient(cookieStore)
   
   const body = await req.json()
-  console.log(body)
   /*
   const formSchema = z.object({
   name: z.string(),
