@@ -62,15 +62,26 @@ const Header = ({ page }: HeaderProps) => {
               Productos
             </Link>
             <Link
-              href="/dashboard/settings"
+              href="/dashboard/categories"
               className={
-                page === "settings"
+                page === "categories"
                   ? "flex items-center gap-4 px-2.5 text-foreground"
                   : "flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
               }
             >
               <LineChart className="h-5 w-5" />
-              Configuraciones
+              Categorías
+            </Link>
+            <Link
+              href="/dashboard/brands"
+              className={
+                page === "brands"
+                  ? "flex items-center gap-4 px-2.5 text-foreground"
+                  : "flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+              }
+            >
+              <LineChart className="h-5 w-5" />
+              Marcas
             </Link>
           </nav>
         </SheetContent>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Home, Package, Package2, Settings } from "lucide-react";
+import { Home, Package, Package2 } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -57,26 +57,42 @@ const Aside = ({ page }: AsideProps) => {
           </TooltipTrigger>
           <TooltipContent side="right">Productos</TooltipContent>
         </Tooltip>
-      </nav>
-      <nav className="mt-auto flex flex-col items-center gap-4 px-2 py-4">
         <Tooltip>
           <TooltipTrigger asChild>
             <Link
-              href="/dashboard/settings"
+              href="/dashboard/categories"
               className={cn(
                 "flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8",
                 {
-                  "bg-accent text-accent-foreground": page === "settings",
+                  "bg-accent text-accent-foreground": page === "categories",
                 }
               )}
             >
-              <Settings className="h-5 w-5" />
-              <span className="sr-only">Configuraciones</span>
+              <Package2 className="h-5 w-5" />
+              <span className="sr-only">Categorias</span>
             </Link>
           </TooltipTrigger>
-          <TooltipContent side="right">Configuraciones</TooltipContent>
+          <TooltipContent side="right">Categorias</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Link
+              href="/dashboard/brands"
+              className={cn(
+                "flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8",
+                {
+                  "bg-accent text-accent-foreground": page === "brands",
+                }
+              )}
+            >
+              <Package2 className="h-5 w-5" />
+              <span className="sr-only">Marcas</span>
+            </Link>
+          </TooltipTrigger>
+          <TooltipContent side="right">Marcas</TooltipContent>
         </Tooltip>
       </nav>
+      
     </aside>
   );
 };

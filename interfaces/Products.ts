@@ -23,6 +23,7 @@ interface Product {
 interface Brand {
     id: number
     name: string
+    created_at: string
 }
 
 export type { Category, Product, Brand }
