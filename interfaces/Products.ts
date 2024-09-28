@@ -2,7 +2,8 @@ interface Category {
     id: number
     name: string
     parent_id?: number
-    image_url: string
+    image: string
+    created_at: string
 }
 
 interface Product {

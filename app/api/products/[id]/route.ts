@@ -57,7 +57,10 @@ export async function PUT(
 
     const body = await req.json()
 
-    const { name, description, price, stock, brand_id, category_id, image, featured, status, discounted_price } = body
+    const { name, description, price, stock, brand_id, category_id, image, featured, status } = body
+    let { discounted_price } = body
+    
+    discounted_price = discounted_price === 'null' ? null : discounted_price
 
     const { data: product, error: errorUpdate } = await client
         .from('products')

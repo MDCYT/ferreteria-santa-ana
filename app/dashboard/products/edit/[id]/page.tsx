@@ -360,7 +360,10 @@ export default function Dashboard() {
                       <FormItem>
                         <FormLabel htmlFor="featured">Destacado</FormLabel>
                         <FormControl>
-                          <Checkbox {...field} id="featured" value={field.value ? "true" : "false"} className="bg-black border-black text-white px-2 py-1" />
+                          <Checkbox {...field} id="featured" value={field.value ? "true" : "false"} className="border border-black"
+                          onCheckedChange={(checked) => {
+                            checked ? form.setValue("featured", true) : form.setValue("featured", false)
+                          }} />
                         </FormControl>
                         <FormDescription>Producto destacado</FormDescription>
                         <FormMessage />

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
+import Image from "next/image";
 
 import {
   Card,
@@ -43,7 +44,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { useEffect, useState } from "react";
 
-import { Brand } from "@/interfaces/Products";
+import { Category } from "@/interfaces/Products";
 
 import { createClient } from "@/utils/supabase/client";
 
@@ -54,7 +55,7 @@ import Header from "@/app/dashboard/components/Header";
 import Link from "next/link";
 
 export default function Dashboard() {
-  const [brands, setBrands] = useState<Brand[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   const client = createClient();
   const router = useRouter();
@@ -71,16 +72,16 @@ export default function Dashboard() {
   }, [client, router]);
 
   useEffect(() => {
-    fetch("/api/brands")
+    fetch("/api/categories")
       .then((res) => res.json())
       .then((data) => {
-        setBrands(data);
+        setCategories(data);
       });
 
   }, []);
 
-  const handleDeleteBrand = (id: number) => {
-    fetch(`/api/brands/delete/${id}`, {
+  const handleDeleteCategory = (id: number) => {
+    fetch(`/api/categories/delete/${id}`, {
       method: "POST",
     })
       .then((res) => res.json())
@@ -88,16 +89,16 @@ export default function Dashboard() {
         if (data.error) {
           console.error(data.error);
         } else {
-          setBrands(brands.filter((brand) => brand.id !== id));
+          setCategories(categories.filter((category) => category.id !== id));
         }
       });
   };
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-[#09090b]/90">
-      <Aside page="brands" />
+      <Aside page="categories" />
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-        <Header page="brands" />
+        <Header page="categories" />
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
           <Tabs defaultValue="all">
             <div className="flex items-center">
@@ -105,11 +106,11 @@ export default function Dashboard() {
                 <TabsTrigger value="all">Todos</TabsTrigger>
               </TabsList>
               <div className="ml-auto flex items-center gap-2">
-                <Link href="/dashboard/brands/new">
+                <Link href="/dashboard/categories/new">
                   <Button size="sm" className="h-7 gap-1">
                     <PlusCircle className="h-3.5 w-3.5" />
                     <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                      Añadir marca
+                      Añadir Categoria
                     </span>
                   </Button>
                 </Link>
@@ -118,14 +119,21 @@ export default function Dashboard() {
             <TabsContent value="all">
               <Card x-chunk="dashboard-06-chunk-0">
                 <CardHeader>
-                  <CardTitle>Marcas</CardTitle>
-                  <CardDescription>Maneja tus marcas aquí</CardDescription>
+                  <CardTitle>Categorias</CardTitle>
+                  <CardDescription>Maneja tus categorias</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Table>
                     <TableHeader>
                       <TableRow>
+                        <TableHead>ID</TableHead>
                         <TableHead>Nombre</TableHead>
+                        <TableHead className="hidden md:table-cell">
+                          Imagen
+                        </TableHead>
+                        <TableHead className="hidden md:table-cell">
+                          Padre
+                        </TableHead>
                         <TableHead className="hidden md:table-cell">
                           Creado
                         </TableHead>
@@ -135,14 +143,26 @@ export default function Dashboard() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {brands.map((brand) => (
-                        <TableRow key={brand.id}>
+                      {categories.map((category) => (
+                        <TableRow key={category.id}>
+                          <TableCell>{category.id}</TableCell>
                           <TableCell className="font-medium">
-                            {brand.name}
+                            {category.name}
                           </TableCell>
-                    
                           <TableCell className="hidden md:table-cell">
-                            {brand.created_at}
+                            <Image
+                              src={category.image}
+                              alt={category.name}
+                              className="w-12 h-12 object-cover"
+                              width={48}
+                              height={48}
+                            />
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            {category.parent_id}
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            {category.created_at}
                           </TableCell>
                           <TableCell>
                             <DropdownMenu>
@@ -159,7 +179,7 @@ export default function Dashboard() {
                               <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                                 <DropdownMenuItem>
-                                  <Link href={`/dashboard/brands/edit/${brand.id}`}>
+                                  <Link href={`/dashboard/categories/edit/${category.id}`}>
                                     Editar
                                   </Link>
                                 </DropdownMenuItem>
@@ -172,17 +192,17 @@ export default function Dashboard() {
                                     <AlertDialogContent className="bg-black">
                                       <AlertDialogHeader>
                                         <AlertDialogTitle>
-                                          Eliminar marca
+                                          Eliminar categoria
                                         </AlertDialogTitle>
                                         <AlertDialogDescription>
-                                          ¿Estás seguro que deseas eliminar esta marca?
+                                          ¿Estás seguro que deseas eliminar esta categoria?
                                         </AlertDialogDescription>
                                       </AlertDialogHeader>
                                       <AlertDialogFooter>
                                         <AlertDialogCancel>
                                           Cancelar
                                         </AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => { handleDeleteBrand(brand.id) }}>
+                                        <AlertDialogAction onClick={() => { handleDeleteCategory(category.id) }}>
                                           Eliminar
                                         </AlertDialogAction>
                                       </AlertDialogFooter>
@@ -198,7 +218,7 @@ export default function Dashboard() {
                 </CardContent>
                 <CardFooter>
                   <div className="text-xs text-muted-foreground">
-                    Mostrando 1-{brands.length} de {brands.length}
+                    Mostrando 1-{categories.length} de {categories.length}
                     productos
                   </div>
                 </CardFooter>

@@ -54,7 +54,7 @@ export default function HomePage() {
                   >
                     <CardContent className="p-4">
                       <Image
-                        src={category.image_url}
+                        src={category.image}
                         alt={category.name}
                         className="w-full h-32 object-cover mb-2"
                         width={600}
