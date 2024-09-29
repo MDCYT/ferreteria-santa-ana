@@ -38,9 +38,9 @@ export default function ProductGrid() {
             <Image src={product.image} alt={product.name} className="w-full h-48 object-cover mb-4" width={600} height={400} />
             <p className="text-2xl font-bold">{product.discounted_price ?
               <>
-                <span className="line-through text-gray-500">${product.price}</span>
-                ${product.discounted_price}
-              </> : `$${product.price}`}
+                <span className="line-through text-gray-500">S/ {product.price}</span>
+                S/ {product.discounted_price}
+              </> : `S/ ${product.price}`}
             </p>
           </CardContent>
           <CardFooter>

@@ -353,14 +353,14 @@ export default function Dashboard() {
                             {product.discounted_price ? (
                               <>
                                 <span className="line-through text-muted-foreground">
-                                  ${product.price}
+                                S/ {product.price}
                                 </span>{" "}
                                 <span className="text-primary">
-                                  ${product.discounted_price}
+                                S/ {product.discounted_price}
                                 </span>
                               </>
                             ) : (
-                              `$${product.price}`
+                              `S/ ${product.price}`
                             )}
                           </TableCell>
                           <TableCell className="hidden md:table-cell">

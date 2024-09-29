@@ -45,7 +45,7 @@ export default function ShoppingCart() {
     const fullMessage = encodeURIComponent(
       `Mi pedido:\n${message}\n${totalMessage}`
     );
-    return `https://wa.me/+51922263021?text=${fullMessage}`;
+    return `https://wa.me/+51994012191?text=${fullMessage}`;
   };
 
   return (
