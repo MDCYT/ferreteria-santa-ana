@@ -81,6 +81,9 @@ export default function Dashboard() {
   const [openBrand, setOpenBrand] = useState(false);
   const [openCategory, setOpenCategory] = useState(false);
 
+  const [limit, setLimit] = useState(100);
+  const [page, setPage] = useState(0);
+
   const client = createClient();
   const router = useRouter();
 
@@ -96,7 +99,7 @@ export default function Dashboard() {
   }, [client, router]);
 
   useEffect(() => {
-    fetch("/api/products/all")
+    fetch(`/api/products/all?page=${page}&limit=${limit}`)
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
@@ -123,7 +126,7 @@ export default function Dashboard() {
         );
         setCategories(filteredCategories);
       });
-  }, []);
+  }, [limit, page]);
 
   useEffect(() => {
     if (selectedBrand || selectedCategory) {
@@ -424,6 +427,38 @@ export default function Dashboard() {
                     Mostrando 1-{products.length} de {allProductsQuantity}{" "}
                     productos
                   </div>
+
+                  {/* Make a Page Selector */}
+                  <div className="flex items-center gap-2">
+                    <Button
+                      disabled={page === 0}
+                      onClick={() => setPage(page - 1)}
+                    >
+                      Anterior
+                    </Button>
+                    <Button
+                      disabled={products.length < limit}
+                      onClick={() => setPage(page + 1)}
+                    >
+                      Siguiente
+                    </Button>
+                    </div>
+
+                    {/* Make a Limit Selector */}
+                    <div className="flex items-center gap-2">
+                      <span>Mostrar</span>
+                      <select
+                        value={limit}
+                        onChange={(e) => setLimit(Number(e.target.value))}
+                        className="text-black bg-white rounded-md border border-black"
+                      >
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                      </select>
+                      <span>productos por página</span>
+                    </div>
                 </CardFooter>
               </Card>
             </TabsContent>
