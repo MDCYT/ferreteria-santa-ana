@@ -32,7 +32,7 @@ export async function GET(
     if (errorSession) return Response.json({ error: errorSession.message }, { status: 500 })
 
     // Only feature products
-    const { data: products, error } = await client.from("products").select("*").range(Number(page), Number(page) + Number(limit))
+    const { data: products, error } = await client.from("products").select("*").range(Number(page) * Number(limit), (Number(page) + 1) * Number(limit))
 
     if (error) return Response.json({ error: error.message }, { status: 500 })
     return Response.json(products ?? [], { status: 200 })
