@@ -45,7 +45,7 @@ export const createCartStore = (
                 if (product.product.id === productId) {
                     return {
                         ...product,
-                        quantity
+                        quantity: quantity == null || quantity < 1 ? 1 : quantity
                     }
                 }
                 return product
@@ -56,7 +56,7 @@ export const createCartStore = (
                 if (product.product.id === productId) {
                     return {
                         ...product,
-                        quantity: product.quantity + quantity
+                        quantity: product.quantity + (quantity == null || quantity < 1 ? 1 : quantity)
                     }
                 }
                 return product

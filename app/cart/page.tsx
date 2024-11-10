@@ -83,9 +83,14 @@ export default function ShoppingCart() {
                       type="number"
                       value={item.quantity}
                       onChange={(e: { target: { value: string } }) =>
+                        // If is NaN, set to 1
+                        // updateQuantity(
+                        //   item.product.id,
+                        //   parseInt(e.target.value)
+                        // )
                         updateQuantity(
                           item.product.id,
-                          parseInt(e.target.value)
+                          parseInt(e.target.value) || 1
                         )
                       }
                       className="w-16 text-center"

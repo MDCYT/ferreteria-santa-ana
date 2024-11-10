@@ -21,11 +21,7 @@ import Image from "next/image";
 import { Product, Category, Brand } from "@/interfaces/Products";
 import { useCartStore } from "@/providers/CartStoreProvider";
 
-export default function ProductPage({
-  selectedCategory,
-}: {
-  selectedCategory: string;
-}) {
+export default function SearchPage({ searchQuery }: { searchQuery: string }) {
   const [brands, setBrands] = useState<Brand[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -49,23 +45,28 @@ export default function ProductPage({
 
   useEffect(() => {
     const fetchData = async () => {
-      const [brandsData, categoriesData, productsData] = await Promise.all([
-        fetch(`/api/brands?category=${selectedCategory}`).then((res) =>
+      const [productsData, categoriesData, brandsData] = await Promise.all([
+        fetch(`/api/products/search?input=${searchQuery}`).then((res) =>
           res.json()
         ),
         fetch("/api/categories").then((res) => res.json()),
-        fetch(`/api/products/category/${selectedCategory}`)
-          .then((res) => res.json())
-          .then((data) => data.products),
+        fetch(`/api/brands`).then((res) => res.json()),
       ]);
-      setBrands(brandsData);
+
+      // Only show brands from the products
+      const filteredBrands = brandsData.filter((brand: { id: number }) =>
+        productsData.some(
+          (product: { brand: number }) => product.brand === brand.id
+        )
+      );
+      setBrands(filteredBrands);
       setCategories(categoriesData);
       setProducts(productsData);
       setLoading(false);
     };
 
     fetchData();
-  }, [selectedCategory]);
+  }, [searchQuery]);
 
   const filteredProducts = useMemo(() => {
     if (loading) return [];
@@ -73,16 +74,12 @@ export default function ProductPage({
       const isWithinPriceRange =
         product.price >= priceRange[0] &&
         (priceRange[1] === 0 || product.price <= priceRange[1]);
-      const isFromSelectedCategory =
-        !selectedCategory || product.category === Number(selectedCategory);
       const isFromSelectedBrands =
         selectedBrands.length === 0 ||
         selectedBrands.includes(product.brand.toString());
-      return (
-        isWithinPriceRange && isFromSelectedCategory && isFromSelectedBrands
-      );
+      return isWithinPriceRange && isFromSelectedBrands;
     });
-  }, [loading, products, priceRange, selectedCategory, selectedBrands]);
+  }, [loading, products, priceRange, selectedBrands]);
 
   const getMaxPrice = useCallback(() => {
     const maxPrice = Math.max(
@@ -138,49 +135,53 @@ export default function ProductPage({
       </div>
       <div className="md:col-span-3 px-6 py-8 mx-auto">
         <h2 className="text-3xl font-bold mb-6">
-          {selectedCategory
-            ? getCategoryName(Number(selectedCategory))
-            : "Todos los productos"}
+          {searchQuery === "*"
+            ? "Todos los productos"
+            : "Resultados de la búsqueda: " + searchQuery}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProducts.map((product) => (
-            <Card key={product.id}>
-              <CardHeader>
-                <CardTitle>{product.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Image
-                  loading="lazy"
-                  src={product.image}
-                  width={200}
-                  height={300}
-                  alt={product.name}
-                  className="w-full h-48 object-cover mb-4"
-                />
-                <p className="text-2xl font-bold">
-                  {product.discounted_price &&
-                  product.discounted_price !== product.price ? (
-                    <>
-                      <span className="line-through text-gray-400">
-                        S/ {product.price.toFixed(2)}
-                      </span>{" "}
-                      S/ {product.discounted_price.toFixed(2)}
-                    </>
-                  ) : (
-                    `S/ ${product.price.toFixed(2)}`
-                  )}
-                </p>
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button onClick={() => setSelectedProduct(product)}>
-                  Ver más
-                </Button>
-                <Button onClick={() => addProductToCart(product)}>
-                  Agregar al carrito
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
+              <Card key={product.id}>
+                <CardHeader>
+                  <CardTitle>{product.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Image
+                    loading="lazy"
+                    src={product.image}
+                    width={200}
+                    height={300}
+                    alt={product.name}
+                    className="w-full h-48 object-cover mb-4"
+                  />
+                  <p className="text-2xl font-bold">
+                    {product.discounted_price &&
+                    product.discounted_price !== product.price ? (
+                      <>
+                        <span className="line-through text-gray-400">
+                          S/ {product.price.toFixed(2)}
+                        </span>{" "}
+                        S/ {product.discounted_price.toFixed(2)}
+                      </>
+                    ) : (
+                      `S/ ${product.price.toFixed(2)}`
+                    )}
+                  </p>
+                </CardContent>
+                <CardFooter className="flex justify-between">
+                  <Button onClick={() => setSelectedProduct(product)}>
+                    Ver más
+                  </Button>
+                  <Button onClick={() => addProductToCart(product)}>
+                    Agregar al carrito
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))
+          ) : (
+            <p>No se encontraron productos</p>
+          )}
         </div>
       </div>
       <Dialog
