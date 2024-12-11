@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Input } from "./ui/input";
+// import { Input } from "./ui/input";
 
 interface ProductGridProps {
   products: Product[];
@@ -33,7 +33,7 @@ export default function ProductGrid({
   const router = useRouter();
 
   // Make a state for every product quantity
-  const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
+  // const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
 
   const addProductToCart = (product: Product, quantity: number = 1) => {
     toast({
