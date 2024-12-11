@@ -43,10 +43,10 @@ function NavigationSection() {
     <nav className="hidden md:flex space-x-4">
       <SearchInput />
       <Link href="/products">
-      <Button variant="header">Productos</Button>
+        <Button variant="header">Productos</Button>
       </Link>
       <Link href="/offers">
-      <Button variant="header">Ofertas</Button>
+        <Button variant="header">Ofertas</Button>
       </Link>
       <Link href="https://wa.me/+51994012191?text=Hola, tengo algunas preguntas sobre los productos de la tienda">
         {" "}
@@ -94,8 +94,8 @@ export default function Header() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <header className="bg-primary text-primary-foreground shadow-md">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+    <header className="bg-primary text-primary-foreground shadow-md sticky top-0 left-0 right-0 z-10">
+      <div className="container mx-auto px-4 flex items-center justify-between">
         <LogoSection />
         <NavigationSection />
         <ActionSection theme={theme} setTheme={setTheme} themes={[]} />

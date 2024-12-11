@@ -1,11 +1,4 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -20,6 +13,10 @@ import {
 import Image from "next/image";
 import { Product, Category, Brand } from "@/interfaces/Products";
 import { useCartStore } from "@/providers/CartStoreProvider";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
+import ProductGrid from "./ProductGrid";
 
 export default function OfferPage() {
   const [brands, setBrands] = useState<Brand[]>([]);
@@ -35,7 +32,19 @@ export default function OfferPage() {
     (state) => state
   );
 
+  const { toast } = useToast();
+  const router = useRouter();
+
   const addProductToCart = (product: Product) => {
+    toast({
+      title: "Producto agregado al carrito",
+      description: `${product.name} se ha agregado al carrito`,
+      action: (
+        <ToastAction altText="Try again" onClick={() => router.push("/cart")}>
+          Ver carrito
+        </ToastAction>
+      ),
+    });
     if (!hasProduct(product.id)) {
       addProduct({ product, quantity: 1 });
     } else {
@@ -46,16 +55,16 @@ export default function OfferPage() {
   useEffect(() => {
     const fetchData = async () => {
       const [productsData, categoriesData, brandsData] = await Promise.all([
-        fetch(`/api/products/offers`).then((res) =>
-          res.json()
-        ),
+        fetch(`/api/products/offers`).then((res) => res.json()),
         fetch("/api/categories").then((res) => res.json()),
-        fetch(`/api/brands`).then((res) => res.json())
+        fetch(`/api/brands`).then((res) => res.json()),
       ]);
 
       // Only show brands from the products
-      const filteredBrands = brandsData.filter((brand: { id: number; }) =>
-        productsData.some((product: { brand: number; }) => product.brand === brand.id)
+      const filteredBrands = brandsData.filter((brand: { id: number }) =>
+        productsData.some(
+          (product: { brand: number }) => product.brand === brand.id
+        )
       );
       setBrands(filteredBrands);
       setCategories(categoriesData);
@@ -75,9 +84,7 @@ export default function OfferPage() {
       const isFromSelectedBrands =
         selectedBrands.length === 0 ||
         selectedBrands.includes(product.brand.toString());
-      return (
-        isWithinPriceRange && isFromSelectedBrands
-      );
+      return isWithinPriceRange && isFromSelectedBrands;
     });
   }, [loading, products, priceRange, selectedBrands]);
 
@@ -129,52 +136,12 @@ export default function OfferPage() {
         </div>
       </div>
       <div className="md:col-span-3 px-6 py-8 mx-auto">
-        <h2 className="text-3xl font-bold mb-6">
-          Ofertas del día
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProducts.length > 0 ? (
-            filteredProducts.map((product) => (
-            <Card key={product.id}>
-              <CardHeader>
-                <CardTitle>{product.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Image
-                  loading="lazy"
-                  src={product.image}
-                  width={200}
-                  height={300}
-                  alt={product.name}
-                  className="w-full h-48 object-cover mb-4"
-                />
-                <p className="text-2xl font-bold">
-                  {product.discounted_price &&
-                  product.discounted_price !== product.price ? (
-                    <>
-                      <span className="line-through text-gray-400">
-                        S/ {product.price.toFixed(2)}
-                      </span>{" "}
-                      S/ {product.discounted_price.toFixed(2)}
-                    </>
-                  ) : (
-                    `S/ ${product.price.toFixed(2)}`
-                  )}
-                </p>
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button onClick={() => setSelectedProduct(product)}>
-                  Ver más
-                </Button>
-                <Button onClick={() => addProductToCart(product)}>
-                  Agregar al carrito
-                </Button>
-              </CardFooter>
-            </Card>
-          ))
-        ) : (
-          <p>No se encontraron productos</p>
-        )}
+        <h2 className="text-3xl font-bold mb-6">Ofertas del día</h2>
+        <div className="md:col-span-3 px-6 py-8 mx-auto">
+          <ProductGrid
+            products={filteredProducts}
+            setSelectedProduct={setSelectedProduct}
+          />
         </div>
       </div>
       <Dialog
