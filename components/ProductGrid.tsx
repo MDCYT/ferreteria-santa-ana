@@ -14,7 +14,7 @@ import { useCartStore } from "@/providers/CartStoreProvider";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+// import { useState } from "react";
 // import { Input } from "./ui/input";
 
 interface ProductGridProps {
@@ -89,7 +89,7 @@ export default function ProductGrid({
           <CardFooter className="flex justify-between items-center flex-wrap">
             <Button onClick={() => setSelectedProduct(product)}>Ver más</Button>
             {/* Quantity */}
-            <Button onClick={() => addProductToCart(product, quantities[product.id])}>
+            <Button onClick={() => addProductToCart(product, 1)}>
               Agregar al carrito
             </Button>
             
